@@ -5,12 +5,14 @@ int led_pin = 13;
 
 boolean door_on = false;
 boolean bell_on = false;
+boolean door_ready = true;
 
 unsigned long door_on_time;
 unsigned long bell_on_time;
 
 unsigned long door_delay = 1000UL;
 unsigned long bell_delay = 500UL;
+unsigned long door_sleep = 15000UL;
 
 void setup() {
   // start serial port at 9600 bps:
@@ -34,31 +36,33 @@ void loop() {
     char inByte = Serial.read();
 
     if(inByte == 'd'){
-      if(door_on){
+      if(!door_ready){
         Serial.write('w');
       } else {
+        door_ready = false;
+        door_on = true;
+        door_on_time = millis();
+        digitalWrite(led_pin, HIGH);
+        digitalWrite(door_pin, LOW);
+        
         Serial.write('r');
       }
       Serial.flush();
-      
-      door_on = true;
-      door_on_time = millis();
-      digitalWrite(led_pin, HIGH);
-      digitalWrite(door_pin, LOW);
     }
 
     if(inByte == 'b'){
       if(bell_on){
         Serial.write('w');
       } else {
+
+        bell_on = true;
+        bell_on_time = millis();
+        digitalWrite(led_pin, HIGH);
+        digitalWrite(bell_pin, LOW);
+        
         Serial.write('r');
       }
       Serial.flush();
-      
-      bell_on = true;
-      bell_on_time = millis();
-      digitalWrite(led_pin, HIGH);
-      digitalWrite(bell_pin, LOW);
     }
   }
 
@@ -73,5 +77,9 @@ void loop() {
     door_on = false;
     digitalWrite(led_pin, LOW);
     digitalWrite(door_pin, HIGH);
+  }
+
+  if(!door_ready && (unsigned long)(current_time - door_on_time) >= door_sleep){
+    door_ready = true;
   }
 }
