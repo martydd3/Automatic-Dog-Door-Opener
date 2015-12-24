@@ -83,7 +83,6 @@ class Index:
 					
 				if(str(arduino.read()) == 'r'):
 					print "Bell Toggled"
-					arduino.door_open = not arduino.door_open
 		
 		return render.index(self.button_form, output_str + ("Open" if arduino.door_open else "Closed"))
 
