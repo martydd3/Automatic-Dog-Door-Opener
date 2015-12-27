@@ -6,7 +6,10 @@ ser.baudrate = 9600
 ser.port = 2
 ser.timeout = 1
 
-ser.open()
+try:
+	ser.open()
+except serial.SerialException:
+	print "serial open exception"
 
 door_open = False
 
@@ -22,8 +25,9 @@ def write(msg):
 
 def read():
 	try:
-		s = ser.read()
+		s = ser.read(1)
 		return s
 	except serial.SerialException:
 		print "serial read exception"
 		return "";
+
