@@ -57,7 +57,6 @@ void loop() {
 
         bell_on = true;
         bell_on_time = millis();
-        digitalWrite(led_pin, HIGH);
         digitalWrite(bell_pin, LOW);
         
         Serial.write('r');
@@ -69,17 +68,16 @@ void loop() {
   unsigned long current_time = millis();
   if(bell_on && (unsigned long)(current_time - bell_on_time) >= bell_delay){
     bell_on = false;
-    digitalWrite(led_pin, LOW);
     digitalWrite(bell_pin, HIGH);
   }
 
   if(door_on && (unsigned long)(current_time - door_on_time) >= door_delay){
     door_on = false;
-    digitalWrite(led_pin, LOW);
     digitalWrite(door_pin, HIGH);
   }
 
   if(!door_ready && (unsigned long)(current_time - door_on_time) >= door_sleep){
     door_ready = true;
+    digitalWrite(led_pin, LOW);
   }
 }
